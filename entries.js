@@ -48,7 +48,7 @@ function getExternalTemperature(callback) {
 			callback(null, JSON.parse(body).main.temp);
 		}
 		else {
-			console.log('Error getting temp: ' + JSON.stringify(err));
+			console.log('Error getting temp: ' + JSON.stringify(res));
 			callback(err);
 		}
 	})
