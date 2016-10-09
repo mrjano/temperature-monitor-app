@@ -44,9 +44,11 @@ function validateEntry(entry) {
 function getExternalTemperature(callback) {
 	request(process.env.OPENWEATHER_URI, function (err, res, body) {
 		if (!err && res.statusCode == 200) {
+			console.log('Got temp: ' + body);
 			callback(null, JSON.parse(body).main.temp);
 		}
 		else {
+			console.log('Error getting temp: ' + JSON.stringify(err));
 			callback(err);
 		}
 	})
