@@ -10,7 +10,8 @@
     "body-parser": "^1.15.2",
     "ejs": "2.3.3",
     "express": "4.13.3",
-    "mongodb": "^2.2.10"
+    "mongodb": "^2.2.10",
+    "request": "^2.75.0"
   },
   "engines": {
     "node": "0.12.7"

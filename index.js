@@ -2,6 +2,7 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	app = express();
 	MongoClient = require('mongodb').MongoClient,
+	process.MONGO = {},
 	entries = null;
 
 app.set('port', (process.env.PORT || 5000));
@@ -18,17 +19,22 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
-app.post('/entries', function(request, response) {
-	console.log(request.body)
-	entries.insert(request.body, function(err, result) {
-		console.log(err);
-		console.log(result);
+app.post('/entries', function(req, res) {
+	console.log(req.body)
+	entries.createEntry(req.body, function(err) {
+		if(err) {
+			res.status(400).send({message:err});
+		}
+		else {
+			res.send({});
+		}
 	});
 })
 
 app.listen(app.get('port'), function() {
 	MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
-		entries = db.collection('entries');
+		process.MONGO.entries = db.collection('entries');
+		entries = require('./entries.js'),
 	   	console.log('Node app is running on port', app.get('port'));
 	});
 
