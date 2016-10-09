@@ -31,6 +31,17 @@ app.post('/entries', function(req, res) {
 	});
 })
 
+app.get('/entries', function(req, res) {
+	entries.getEntries(req.query, function(err, results) {
+		if(err) {
+			res.status(400).send({message:err});
+		}
+		else {
+			res.send(results);
+		}
+	});
+});
+
 app.listen(app.get('port'), function() {
 	MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
 		process.MONGO.entries = db.collection('entries');

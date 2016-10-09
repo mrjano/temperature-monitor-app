@@ -26,6 +26,22 @@ exports.createEntry = function(data, callback) {
 	}
 };
 
+exports.getEntries = function(data, callback) {
+	var skip = process.env.PAGE_SIZE*data.page || 0;
+	entries.find().sort({created: 1}).skip(skip).toArray(function(err, results) {
+		entries.count({}, function(err, count) {
+			var returnData = {
+				results: results,
+				pages: {
+					current: parseInt(data.page),
+					total:  Math.ceil(count/process.env.PAGE_SIZE)
+				}
+			}
+			callback(null, returnData);
+		});
+	});
+}
+
 //Validates the entry and returns null if error
 function validateEntry(entry) {
 	if(!entry.created) {
