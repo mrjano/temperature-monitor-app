@@ -28,7 +28,7 @@ exports.createEntry = function(data, callback) {
 
 exports.getEntries = function(data, callback) {
 	var skip = process.env.PAGE_SIZE*data.page || 0;
-	entries.find().sort({created: 1}).skip(skip).toArray(function(err, results) {
+	entries.find().sort({created: -1}).skip(skip).toArray(function(err, results) {
 		entries.count({}, function(err, count) {
 			var returnData = {
 				results: results,
@@ -57,7 +57,8 @@ function validateEntry(entry) {
 	return validatedEntry;
 }
 
-function getExternalTemperature(callback) {
+var maxRetries = 3;
+function getExternalTemperature(callback, retry) {
 	request(process.env.OPENWEATHER_URI, function (err, res, body) {
 		if (!err && res.statusCode == 200) {
 			console.log('Got temp: ' + body);
@@ -65,7 +66,17 @@ function getExternalTemperature(callback) {
 		}
 		else {
 			console.log('Error getting temp: ' + JSON.stringify(res));
-			callback(err);
+			//Retry
+			if(!retry) {
+				retry = 0
+			}
+			retry += 1
+			if(retry > maxRetries) {
+				callback(err);
+			}
+			else {
+				getExternalTemperature(callback, retry)
+			}
 		}
 	})
 }
