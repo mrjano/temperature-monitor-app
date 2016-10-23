@@ -75,7 +75,8 @@ function getExternalTemperature(callback, retry) {
 				callback(err);
 			}
 			else {
-				getExternalTemperature(callback, retry)
+				console.log('Retrying getting temperature');
+				getExternalTemperature(callback, retry);
 			}
 		}
 	})
